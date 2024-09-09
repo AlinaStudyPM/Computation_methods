@@ -7,17 +7,17 @@
 
 using namespace std;
 
-void separate_roots(double A, double B, double H, set<pair<double, double>>& root_intervals); //Локализация корней
-void method_bisection(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //Метод бисекции
-void method_Newton(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //Метод Ньютона (или метод секущих)
-void method_Newton_modified(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //Модифицированный метод Ньютона
-void method_secant(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //Метод секущих
-void input_with_default(double default_value, double& t); //функция для ввода значений параметров
-void print_result(double x, double d, double m, vector<double> first_approx, double last_step); //вывод результатов
+void separate_roots(double A, double B, double H, set<pair<double, double>>& root_intervals); //Р›РѕРєР°Р»РёР·Р°С†РёСЏ РєРѕСЂРЅРµР№
+void method_bisection(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //РњРµС‚РѕРґ Р±РёСЃРµРєС†РёРё
+void method_Newton(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //РњРµС‚РѕРґ РќСЊСЋС‚РѕРЅР° (РёР»Рё РјРµС‚РѕРґ СЃРµРєСѓС‰РёС…)
+void method_Newton_modified(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //РњРѕРґРёС„РёС†РёСЂРѕРІР°РЅРЅС‹Р№ РјРµС‚РѕРґ РќСЊСЋС‚РѕРЅР°
+void method_secant(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0); //РњРµС‚РѕРґ СЃРµРєСѓС‰РёС…
+void input_with_default(double default_value, double& t); //РјРµС‚РѕРґ РґР»СЏ РІРІРѕРґР° Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ
+void print_result(double x, double d, double m, vector<double> first_approx, double last_step); //РІС‹РІРѕРґ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
 
 int main()
 {
-    setlocale(LC_ALL, "Russian");
+    //setlocale(LC_ALL, "Russian");
     //system("chcp 1251");
 
     double A, B, e, h;
@@ -25,93 +25,93 @@ int main()
     set <double> roots;
     unsigned roots_counter = 0, N = 100;
 
-    cout << "ЗАДАНИЕ: Найти все корни нечётной кратности уравнения 10 * cos(x) - 0,1 * x^2 на отрезке [A, B] с точностью e" << endl << endl;
+    cout << "Р—РђР”РђРќРР•: РќР°Р№С‚Рё РІСЃРµ РєРѕСЂРЅРё РЅРµС‡С‘С‚РЅРѕР№ РєСЂР°С‚РЅРѕСЃС‚Рё СѓСЂР°РІРЅРµРЅРёСЏ 10 * cos(x) - 0,1 * x^2 РЅР° РѕС‚СЂРµР·РєРµ [A, B] СЃ С‚РѕС‡РЅРѕСЃС‚СЊСЋ e" << endl << endl;
     const double A_default = -8.0,
         B_default = 2.0,
         e_default = 1e-5;
     do
     {
 
-        cout << "Введите значения левой границы поиска А (по умолчанию " << A_default << "): ";
+        cout << "Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ Р»РµРІРѕР№ РіСЂР°РЅРёС†С‹ РїРѕРёСЃРєР° A (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ " << A_default << "): ";
         input_with_default(A_default, A);
-        cout << "Введите значения правой границы поиска B (по умолчанию " << B_default << "): ";
+        cout << "Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РїСЂР°РІРѕР№ РіСЂР°РЅРёС†С‹ РїРѕРёСЃРєР° B (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ " << B_default << "): ";
         input_with_default(B_default, B);
         if (B - A < 0)
         {
-            cout << "Некорректные границы поиска. Попробуйте ввести ещё раз." << endl;
+            cout << "РќРµРєРѕСЂСЂРµРєС‚РЅС‹Рµ РіСЂР°РЅРёС†С‹ РїРѕРёСЃРєР°. РџРѕРїСЂРѕР±СѓР№С‚Рµ РІРІРµСЃС‚Рё РµС‰С‘ СЂР°Р·." << endl;
         }
     } while (B - A < 0);
     cout << endl;
 
-    cout << "ЭТАП 1. Отделение корней" << endl;
-    cout << "Отрезок поиска: [" << A << "; " << B << "]" << endl << endl;
+    cout << "Р­РўРђРќ 1. РћС‚РґРµР»РµРЅРёРµ РєРѕСЂРЅРµР№" << endl;
+    cout << "РћС‚СЂРµР·РѕРє РїРѕРёСЃРєР°: [" << A << "; " << B << "]" << endl << endl;
     string answer;
     do
     {
         do
         {
-            cout << "Введите длину шага h (по умолчанию 1/" << N << " длины отрезка[A, B]): ";
+            cout << "Р’РІРµРґРёС‚Рµ РґР»РёРЅСѓ С€Р°РіР° h (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ 1/" << N << " РґР»РёРЅС‹ РѕС‚СЂРµР·РєР° [A, B]): ";
             input_with_default((B - A) / N, h);
             if (h <= 0)
             {
-                cout << "Длина шага h должна быть положительной. Попробуйте ввести ещё раз" << endl;
+                cout << "Р”Р»РёРЅР° С€Р°РіР° h РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕР№. РџРѕРїСЂРѕР±СѓР№С‚Рµ РІРІРµСЃС‚Рё РµС‰С‘ СЂР°Р·" << endl;
             }
         } while (h <= 0);
-        cout << "Величина шага поиска: " << h << endl;
+        cout << "Р’РµР»РёС‡РёРЅР° С€Р°РіР° РїРѕРёСЃРєР°: " << h << endl;
         root_intervals = set<pair<double, double>>();
         separate_roots(A, B, h, root_intervals);
-        cout << "Количество найденных отрезков: " << root_intervals.size() << endl;
+        cout << "РљРѕР»РёС‡РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРЅС‹С… РѕС‚СЂРµР·РєРѕРІ: " << root_intervals.size() << endl;
         for (auto interval : root_intervals)
         {
             cout << "[" << interval.first << "; " << interval.second << "]" << endl;
         }
-        cout << "Хотите ввести другое значение h? Y/N" << endl;
+        cout << "РҐРѕС‚РёС‚Рµ РІРІРµСЃС‚Рё РґСЂСѓРіРѕРµ Р·РЅР°С‡РµРЅРёРµ h? Y/N" << endl;
         cin >> answer;
         cout << endl;
     } while (answer != "N");
     cout << endl;
 
-    cout << "ЭТАП 2. Уточнение корней" << endl << endl;
+    cout << "Р­РўРђРџ 2. РЈС‚РѕС‡РЅРµРЅРёРµ РєРѕСЂРЅРµР№" << endl << endl;
     do
     {
         do
         {
-            cout << "Введите необходимую точность e (по умолчанию " << e_default << "): ";
+            cout << "Р’РІРµРґРёС‚Рµ РЅРµРѕР±С…РѕРґРёРјСѓСЋ С‚РѕС‡РЅРѕСЃС‚СЊ e (? ????? " << e_default << "): ";
             input_with_default(e_default, e);
             if (e <= 0)
             {
-                cout << "Некорректная точность. Попробуйте ввести ещё раз." << endl;
+                cout << "РќРµРєРѕСЂСЂРµРєС‚РЅР°СЏ С‚РѕС‡РЅРѕСЃС‚СЊ. РџРѕРїСЂРѕР±СѓР№С‚Рµ РІРІРµСЃС‚Рё РµС‰С‘ СЂР°Р·." << endl;
             }
         } while (e <= 0);
-        cout << "Заданная точность e = " << e << endl << endl;
+        cout << "Р—Р°РґР°РЅРЅР°СЏ С‚РѕС‡РЅРѕСЃС‚СЊ e = " << e << endl << endl;
         roots = set<double>();
         int k = 1;
         for (auto interval : root_intervals)
         {
-            cout << k << ") Уточнение корня на отрезке [" << interval.first << "; " << interval.second << "]:" << endl << endl;
+            cout << k << ") РЈС‚РѕС‡РЅРµРЅРёРµ РєРѕСЂРЅСЏ РЅР° РѕС‚СЂРµР·РєРµ [" << interval.first << "; " << interval.second << "]:" << endl << endl;
 
-            cout << "Метод бисекции:" << endl;
+            cout << "РњРµС‚РѕРґ Р±РёСЃРµРєС†РёРё:" << endl;
             double x_method1, d_method1, last_step_method1;
             vector<double> x_0_method1 = vector<double>(1);
             unsigned m_method1 = 0;
             method_bisection(interval.first, interval.second, e, x_method1, d_method1, m_method1, last_step_method1, x_0_method1);
             print_result(x_method1, d_method1, m_method1, x_0_method1, last_step_method1);
 
-            cout << "Метод Ньютона (метод касательных):" << endl;
+            cout << "РњРµС‚РѕРґ РќСЊСЋС‚РѕРЅР° (РјРµС‚РѕРґ РєР°СЃР°С‚РµР»СЊРЅС‹С…):" << endl;
             double x_method2, d_method2 = -1, last_step_method2;
             vector<double> x_0_method2 = vector<double>(1);
             unsigned m_method2 = 0;
             method_Newton(interval.first, interval.second, e, x_method2, d_method2, m_method2, last_step_method2, x_0_method2);
             print_result(x_method2, d_method2, m_method2, x_0_method2, last_step_method2);
 
-            cout << "Модифицированный метод Ньютона:" << endl;
+            cout << "РњРѕРґРёС„РёС†РёСЂРѕРІР°РЅРЅС‹Р№ РјРµС‚РѕРґ РќСЊСЋС‚РѕРЅР°:" << endl;
             double x_method3, d_method3 = -1, last_step_method3;
             vector<double> x_0_method3 = vector<double>(1);
             unsigned m_method3 = 0;
             method_Newton_modified(interval.first, interval.second, e, x_method3, d_method3, m_method3, last_step_method3, x_0_method3);
             print_result(x_method3, d_method3, m_method3, x_0_method3, last_step_method3);
 
-            cout << "Метод секущих:" << endl;
+            cout << "РњРµС‚РѕРґ СЃРµРєСѓС‰РёС…:" << endl;
             double x_method4, d_method4 = -1, last_step_method4;
             vector<double> x_0_method4 = vector<double>(2);
             unsigned m_method4 = 0;
@@ -121,25 +121,25 @@ int main()
             cout << endl;
             k++;
         }
-        cout << "Хотите ввести другое значение e? Y/N" << endl;
+        cout << "РҐРѕС‚РёС‚Рµ РІРІРµСЃС‚Рё РґСЂСѓРіРѕРµ Р·РЅР°С‡РµРЅРёРµ e? Y/N" << endl;
         cin >> answer;
         cout << endl;
     } while (answer != "N");
 }
 
-//исследуемая функция
+//РСЃСЃР»РµРґСѓРµРјР°СЏ С„СѓРЅРєС†РёСЏ
 double f(double x)
 {
     return 10 * cos(x) - 0.1 * x * x;
 }
 
-//производная исследуемой функции
+//РџСЂРѕРёР·РІРѕРґРЅР°СЏ РёСЃСЃР»РµРґСѓРµРјРѕР№ С„СѓРЅРєС†РёРё
 double d_f(double x)
 {
     return -10 * sin(x) - 0.2 * x;
 }
 
-//Локализация корней
+//Р›РѕРєР°Р»РёР·Р°С†РёСЏ РєРѕСЂРЅРµР№
 void separate_roots(double A, double B, double H, set<pair<double, double>>& root_intervals)
 {
     double X1, X2, Y1, Y2;
@@ -159,7 +159,7 @@ void separate_roots(double A, double B, double H, set<pair<double, double>>& roo
     }
 }
 
-//Метод бисекции
+//РњРµС‚РѕРґ Р±РёСЃРµРєС†РёРё
 void method_bisection(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0)
 {
     m = 0;
@@ -183,10 +183,10 @@ void method_bisection(double a, double b, double e, double& x, double& d, unsign
     d = (b - a) / 2;
 }
 
-//Метод Ньютона (или метод секущих)
+//РњРµС‚РѕРґ РќСЊСЋС‚РѕРЅР° (РёР»Рё РјРµС‚РѕРґ СЃРµРєСѓС‰РёС…)
 void method_Newton(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0)
 {
-    x_0[0] = (a + b) / 2; //TODO: Выбираем x_0
+    x_0[0] = (a + b) / 2;
     double x_prev;
     m = 0;
     x = x_0[0];
@@ -201,10 +201,10 @@ void method_Newton(double a, double b, double e, double& x, double& d, unsigned 
     }
 }
 
-//Модифицированный метод Ньютона
+//РњРѕРґРёС„РёС†РёСЂРѕРІР°РЅРЅС‹Р№ РјРµС‚РѕРґ РќСЊСЋС‚РѕРЅР°
 void method_Newton_modified(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0)
 {
-    x_0[0] = (a + b) / 2; //TODO: Выбираем x_0
+    x_0[0] = (a + b) / 2;
     double x_prev;
     double der_x_0 = d_f(x_0[0]);
     m = 0;
@@ -220,11 +220,11 @@ void method_Newton_modified(double a, double b, double e, double& x, double& d, 
     }
 }
 
-//Метод секущих
+//РњРµС‚РѕРґ СЃРµРєСѓС‰РёС…
 void method_secant(double a, double b, double e, double& x, double& d, unsigned int& m, double& last_step, vector<double>& x_0)
 {
-    x_0[0] = a + (b - a) / 3; //TODO: Выбираем x_0
-    x_0[1] = b - (b - a) / 3; //TODO: Выбираем x_1
+    x_0[0] = a + (b - a) / 3;
+    x_0[1] = b - (b - a) / 3;
     double x_prev, x_preprev;
     m = 0;
     x = x_0[0];
@@ -240,7 +240,7 @@ void method_secant(double a, double b, double e, double& x, double& d, unsigned 
     }
 }
 
-//функция для ввода значений параметров
+//РњРµС‚РѕРґ РґР»СЏ РІРІРѕРґР° Р·РЅР°С‡РµРЅРёР№ РїР°СЂР°РјРµС‚СЂРѕРІ
 void input_with_default(double default_value, double& t)
 {
     string input;
@@ -254,20 +254,20 @@ void input_with_default(double default_value, double& t)
     }
 }
 
-//вывод результатов
+//Р’С‹РІРѕРґ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
 void print_result(double x, double d, double m, vector<double> x_0, double last_step)
 {
     //cout.fill('.');
-    cout << "\t" << setiosflags(ios::left) << setw(40) << "Начальное приближение к корню ";                 //Это значение x_0 ?
+    cout << "\t" << setiosflags(ios::left) << setw(40) << "РќР°С‡Р°Р»СЊРЅРѕРµ РїСЂРёР±Р»РёР¶РµРЅРёРµ Рє РєРѕСЂРЅСЋ ";
     for (double x : x_0)
     {
         cout << x << "  ";
     }
     cout << endl;
-    cout << "\t" << setiosflags(ios::left) << setw(40) << "Количество шагов " << m << endl;
-    cout << "\t" << setiosflags(ios::left) << setw(40) << "Последняя разность |x_m - x_(m-1)| " << last_step << endl;
-    cout << "\t" << setiosflags(ios::left) << setw(40) << "Корень " << std::setprecision(15) << x << endl;                                                   //<< std::setprecision(15)
-    cout << "\t" << setiosflags(ios::left) << setw(40) << "Абсолютная величина невязки " << abs(f(x)) << endl;
+    cout << "\t" << setiosflags(ios::left) << setw(40) << "РљРѕР»РёС‡РµСЃС‚РІРѕ С€Р°РіРѕРІ " << m << endl;
+    cout << "\t" << setiosflags(ios::left) << setw(40) << "РњРѕРґСѓР»СЊ СЂР°Р·РЅРѕСЃС‚Рё |x_m - x_(m-1)| " << last_step << endl;
+    cout << "\t" << setiosflags(ios::left) << setw(40) << "РљРѕСЂРµРЅСЊ " << std::setprecision(15) << x << endl;                                                   //<< std::setprecision(15)
+    cout << "\t" << setiosflags(ios::left) << setw(40) << "РђР±СЃРѕР»СЋС‚РЅР°СЏ РІРµР»РёС‡РёРЅР° РЅРµРІСЏР·РєРё " << abs(f(x)) << endl;
 
 }
 
@@ -276,8 +276,8 @@ void print_result(double x, double d, double m, vector<double> x_0, double last_
 
 
 
-/*К методу Ньютона
-    Второго порядка сходимости для корня кратности p можно достичь,
-    применяя расчетную формулу вида
+/*Рљ РјРµС‚РѕРґСѓ РќСЊСЋС‚РѕРЅР°
+    Р’С‚РѕСЂРѕРіРѕ РїРѕСЂСЏРґРєР° СЃС…РѕРґРёРјРѕСЃС‚Рё РґР»СЏ РєРѕСЂРЅСЏ РєСЂР°С‚РЅРѕСЃС‚Рё p РјРѕР¶РЅРѕ РґРѕСЃС‚РёС‡СЊ,
+    РїСЂРёРјРµРЅСЏСЏ СЂР°СЃС‡РµС‚РЅСѓСЋ С„РѕСЂРјСѓР»Сѓ РІРёРґР°
     x_k = x_(k-1) - p * f(x_(k-1)) / d_f(x_(k-1))
 */

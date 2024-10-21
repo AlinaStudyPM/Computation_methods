@@ -222,8 +222,6 @@ void calculate_formulas(vector<result_line>& tf, double h, unsigned k)
         tf[i].r_df = abs(df(tf[i].x, k) - tf[i].df);
         tf[i].r_d2f = abs(d2f(tf[i].x, k) - tf[i].d2f);
         tf[i].r_new_df = abs(df(tf[i].x, k) - tf[i].new_df);
-
-        cout << i << ") Погрешность новой производной: " << df(tf[i].x, k) << " - " << tf[i].new_df << " = " << df(tf[i].x, k) - tf[i].new_df << endl;
     }
 }
 //Вывод результата в консоль

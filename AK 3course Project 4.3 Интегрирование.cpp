@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <functional>
@@ -104,73 +104,92 @@ void Solution(function<double(double)> f, function<string()> print_f, function<d
     cout << "Исследуемая функция f(x) = " << print_f() << endl;
     cout << endl;
 
-    double A, B;
-    cout << "Введите пределы интегрирования A и B: " << endl;
-    cin >> A >> B;
-    cout << endl;
+    string answer_A_B;
 
-    unsigned m;
-    cout << "Введите число промежутков m: " << endl;
-    cin >> m;
-    cout << endl;
-
-    cout << endl;
-
-    cout << "ЭТАП ВЫЧИСЛЕНИЙ" << endl;
-    double J = ExactIntegral(pf, A, B);
-    cout << "Истинное значение интеграла: " << double_to_string(J) << endl;
-    cout << endl;
-    vector<string> methods = { "СКФ левого прямоугольника",
-                               "СКФ правого прямоугольника",
-                               "СКФ среднего прямоугольника",
-                               "СКФ трапеции",
-                               "СКФ Симпсона" };
-    vector<double> first_result = CalculateIntegrals(f, print_f, pf, A, B, m, J);
-    print_all_results(methods, first_result, J);
-    cout << endl;
-
-    string answer_runge = "";
-    cout << "Хотите уточнить значение по методу Рунге? Y/N" << endl;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin >> answer_runge;
-    cout << endl;
-
-    if (answer_runge == "Y")
+    do
     {
-        int width = 60;
-        cout << "ЭТАП Уточнение по методу Рунге" << endl;
-        unsigned l;
-        cout << "Введите, во сколько раз цвеличить m = " << m << ": " << endl;
-        cin >> l;
+
+        double A, B;
+        cout << "Введите пределы интегрирования A и B: " << endl;
+        cin >> A >> B;
         cout << endl;
 
-        vector<double> second_result = CalculateIntegrals(f, print_f, pf, A, B, m * l, J);
-        print_all_results(methods, second_result, J);
+        string answer_m;
+
+        do
+        {
+
+            unsigned m;
+            cout << "Введите число промежутков m: " << endl;
+            cin >> m;
+            cout << endl;
+
+            cout << endl;
+
+            cout << "ЭТАП ВЫЧИСЛЕНИЙ" << endl;
+            double J = ExactIntegral(pf, A, B);
+            cout << "Истинное значение интеграла: " << double_to_string(J) << endl;
+            cout << endl;
+            vector<string> methods = { "СКФ левого прямоугольника",
+                                       "СКФ правого прямоугольника",
+                                       "СКФ среднего прямоугольника",
+                                       "СКФ трапеции",
+                                       "СКФ Симпсона" };
+            vector<double> first_result = CalculateIntegrals(f, print_f, pf, A, B, m, J);
+            print_all_results(methods, first_result, J);
+            cout << endl;
+
+            string answer_runge = "";
+            cout << "Хотите уточнить значение по методу Рунге? Y/N" << endl;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin >> answer_runge;
+            cout << endl;
+
+            if (answer_runge == "Y")
+            {
+                cout << "ЭТАП Уточнение по методу Рунге" << endl;
+                unsigned l;
+                cout << "Введите, во сколько раз цвеличить m = " << m << ": " << endl;
+                cin >> l;
+                cout << endl;
+
+                vector<double> second_result = CalculateIntegrals(f, print_f, pf, A, B, m * l, J);
+                print_all_results(methods, second_result, J);
+                cout << endl;
+
+                cout << "Уточнённые значения: " << endl;
+
+                cout << "Истинное значение интеграла: " << double_to_string(J) << endl;
+
+                double runge_left_rectangle = runge(first_result[0], second_result[0], l, 1);
+                double runge_right_rectangle = runge(first_result[1], second_result[1], l, 1);
+                double runge_middle_rectangle = runge(first_result[2], second_result[2], l, 2);
+                double runge_trapeze = runge(first_result[3], second_result[3], l, 2);
+                double runge_Simpson = runge(first_result[4], second_result[4], l, 4);
+
+                vector<string> methods = { "СКФ левого прямоугольника",
+                                           "СКФ правого прямоугольника",
+                                           "СКФ среднего прямоугольника",
+                                           "СКФ трапеции",
+                                           "СКФ Симпсона" };
+                vector<double> runge_results = { runge_left_rectangle,
+                                                 runge_right_rectangle,
+                                                 runge_middle_rectangle,
+                                                 runge_trapeze,
+                                                 runge_Simpson };
+
+                print_all_results(methods, runge_results, J);
+            }
+            cout << "Хотите ввести другое число промежутков m? Y/N" << endl;
+            cin >> answer_m;
+            cout << endl;
+
+        } while (answer_m != "N");
+
+        cout << "Хотите ввести другие пределы интегрирования A и B? Y/N" << endl;
+        cin >> answer_A_B;
         cout << endl;
-
-        cout << "Уточнённые значения: " << endl;
-
-        cout << "Истинное значение интеграла: " << double_to_string(J) << endl;
-
-        double runge_left_rectangle = runge(first_result[0], second_result[0], l, 1);
-        double runge_right_rectangle = runge(first_result[1], second_result[1], l, 1);
-        double runge_middle_rectangle = runge(first_result[2], second_result[2], l, 2);
-        double runge_trapeze = runge(first_result[3], second_result[3], l, 2);
-        double runge_Simpson = runge(first_result[4], second_result[4], l, 4);
-
-        vector<string> methods = { "СКФ левого прямоугольника",
-                                   "СКФ правого прямоугольника",
-                                   "СКФ среднего прямоугольника",
-                                   "СКФ трапеции",
-                                   "СКФ Симпсона" };
-        vector<double> runge_results = { runge_left_rectangle,
-                                         runge_right_rectangle,
-                                         runge_middle_rectangle,
-                                         runge_trapeze,
-                                         runge_Simpson };
-
-        print_all_results(methods, runge_results, J);
-    }
+    } while (answer_A_B != "N");
 }
 
 int main()
